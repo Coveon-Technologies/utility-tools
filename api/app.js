@@ -1,12 +1,15 @@
-const Koa = require('koa')
-const app = new Koa({ proxy: true })
-const router = require('koa-router')
+const Koa = require("koa");
+const parser = require("koa-bodyparser");
+const cors = require("@koa/cors");
 
-const _ =  router()
-app.use(async ctx => {
-  ctx.body = 'Hello World';
-});
+const router = require("./router");
+const App = new Koa();
+const port = 3001;
 
-app.listen(3001, ()=>{
-   console.log('Server running on http://localhost:3001');
-});
+App.use(parser())
+  .use(cors())
+  .use(router.routes())
+  .listen(port, () => {
+    console.log(`🚀 Server listening http://127.0.0.1:${port}/ 🚀`);
+  });
+  
