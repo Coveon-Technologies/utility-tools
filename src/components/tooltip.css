@@ -1,11 +1,11 @@
 .tooltip {
   position: absolute;
   display: none;
-  background-color: black;
+  background-color: rgb(88, 20, 20);
   color: white;
-  padding: 5px;
+  padding: 10px;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .highlight {
