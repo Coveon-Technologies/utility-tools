@@ -4,6 +4,17 @@ import './tooltip.css'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
+const matchingText = [
+  {
+    "keywords": ['Influencer', 'agreement' ],
+    "meaning" : 'This is a test for paragraph'
+  },
+  {
+    "keywords": ['disclosure', 'compensation' ],
+    "meaning" : 'compensation or compensation Test'
+  }
+]
+
 const PdfToText = () => {
   const [pdfText, setPdfText] = useState('');
   const [definition, setDefinition] = useState('');
@@ -29,41 +40,29 @@ const PdfToText = () => {
     reader.readAsArrayBuffer(file);
   };
 
-
-  const handleTooltip = (event) => {
-    const selection = window.getSelection();
-    const selectedWord = selection.toString().trim();
-    console.log(selectedWord)
-
-    if (selectedWord !== '') {
-      const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`;
-
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.length > 0 && data[0].meanings[0]) {
-            const def = data[0].meanings[0].definitions[0].definition;
-            console.log(data[0])
-            setDefinition(def);
-            const tooltip = document.querySelector('.tooltip');
-            tooltip.style.display = 'block';
-            tooltip.style.top = `${event.pageY}px`;
-            tooltip.style.left = `${event.pageX}px`;
-          }
-        })
-        .catch(error => console.log(error));
-    } else {
-      setDefinition('');
-      const tooltip = document.querySelector('.tooltip');
-      tooltip.style.display = 'none';
-    }
+  const highlightText = (text) => {
+    // Split the text into an array of words
+    const words = text.split(' ');
+    // Loop through the words and check each one against the matchingText array
+    const highlightedWords = words.map((word) => {
+      const matchingKeywords = matchingText.filter((item) => item.keywords.includes(word));
+      if (matchingKeywords.length > 0) {
+        // Return the word wrapped in a <u> tag if it matches any keyword
+        return `<u>${word}</u>`;
+      }
+      // Otherwise return the word as-is
+      return word;
+    });
+    // Join the words back together with spaces
+    return highlightedWords.join(' ');
   };
+
+  const highlightedText = highlightText(pdfText);
 
   return (
     <div>
       <input type="file" onChange={handleFileSelect} />
-      <div className="pdf-text" onMouseUp={handleTooltip}>{pdfText}</div>
-      <div className="tooltip">{definition}</div>
+      <p className="pdf-text" dangerouslySetInnerHTML={{ __html: highlightedText }}></p>
     </div>
   );
 };
