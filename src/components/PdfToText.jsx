@@ -49,7 +49,6 @@ const PdfToText = () => {
             tooltip.style.display = 'block';
             tooltip.style.top = `${event.pageY}px`;
             tooltip.style.left = `${event.pageX}px`;
-            console.log(`Tooltip position: top=${tooltip.style.top}, left=${tooltip.style.left}`);
           }
         })
         .catch(error => console.log(error));
@@ -60,13 +59,11 @@ const PdfToText = () => {
     }
   };
 
-
   return (
     <div>
       <input type="file" onChange={handleFileSelect} />
-      <div className="pdf-text" onMouseUp={handleTooltip} dangerouslySetInnerHTML={{ __html: pdfText.replace(/(consideration)/gi, '<span>$1</span>') }}></div>
+      <div className="pdf-text" onMouseUp={handleTooltip}>{pdfText}</div>
       <div className="tooltip">{definition}</div>
-
     </div>
   );
 };
